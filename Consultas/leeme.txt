@@ -1,0 +1,1 @@
+Este directorio almacena las consultas sql que se requieran para ejecutar las rutinas.
