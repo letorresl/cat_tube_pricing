@@ -1,6 +1,6 @@
 # archivos
 datos_pgdb.txt
-# directorios
-Bases/
-Cuadernos/.ipynb_checkpoints/
 .Rproj.user
+# directorios
+Bases/Locales/
+Cuadernos/.ipynb_checkpoints/
