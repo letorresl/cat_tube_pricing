@@ -2,6 +2,7 @@
 datos_pgdb.txt
 .Rproj.user
 Bases/Locales
+*.pyc
 # directorios
 Bases/Locales/
 Cuadernos/.ipynb_checkpoints/
