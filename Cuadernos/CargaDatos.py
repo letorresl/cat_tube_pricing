@@ -50,6 +50,7 @@ def retornaSets(path_proyecto):
     #specs = cargadatos(path_proyecto, 'comp_threaded.csv')
     specs = read_csv(filepath_or_buffer = generaPath(path_proyecto, 'comp_threaded.csv'))#, index_col = 0)
 
+    components = cargadatos(path_proyecto, 'components.csv')
     comp_adaptor = cargadatos(path_proyecto, 'comp_adaptor.csv')
     comp_boss = cargadatos(path_proyecto, 'comp_boss.csv')
     comp_elbow = cargadatos(path_proyecto, 'comp_elbow.csv')
@@ -73,9 +74,14 @@ def retornaSets(path_proyecto):
                   'comp_sleeve' : comp_sleeve, 'comp_straight' : comp_straight, 'comp_straight' : comp_straight,
                   'comp_tee' : comp_tee, 'comp_threaded' : comp_threaded, 'tube_end_form' : tube_end_form,
                   'type_component' : type_component, 'type_connection' : type_connection,
-                  'type_end_form' : type_end_form}
+                  'type_end_form' : type_end_form, 'components' : components}
     
     return diccionario
+
+
+# In[1]:
+
+get_ipython().system(u'ls -lha ../Bases/Locales/')
 
 
 # # Ejecucion de rutina
