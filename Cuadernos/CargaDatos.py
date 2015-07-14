@@ -33,6 +33,13 @@ def cargaSets(path_proyecto, nombre_set, indice = None):
     return df
 
 
+# In[1]:
+
+def generaPath(path, nombre_archivo):
+    path_unido = join(path, 'Bases', 'Locales', nombre_archivo)
+    return path_unido
+
+
 # In[ ]:
 
 def retornaSets(path_proyecto):
