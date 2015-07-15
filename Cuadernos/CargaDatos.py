@@ -86,9 +86,4 @@ def retornaSets(path_proyecto):
     return diccionario
 
 
-# In[1]:
-
-get_ipython().system(u'ls -lha ../Bases/Locales/')
-
-
 # # Ejecucion de rutina
