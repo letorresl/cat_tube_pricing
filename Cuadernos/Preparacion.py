@@ -10,7 +10,7 @@
 from pandas import merge
 
 
-# In[52]:
+# In[2]:
 
 from sklearn.preprocessing import label_binarize
 from pandas import DataFrame
@@ -18,7 +18,7 @@ from pandas import DataFrame
 
 # ### Definicion de funciones
 
-# In[27]:
+# In[3]:
 
 def integracion1(sets_df, train_o_envio = 'train'):
     col_llave = 'tube_assembly_id'
@@ -27,20 +27,20 @@ def integracion1(sets_df, train_o_envio = 'train'):
     return df
 
 
-# In[80]:
+# In[4]:
 
 def limpieza2(df):
     # limpieza de NaN's en las columnas de component_id_n
     return df.dropna(axis = 0, how = 'all', subset = ['component_id_{}'.format(i) for i in range(1, 9)])
 
 
-# In[232]:
+# In[5]:
 
 from IPython.core.debugger import Tracer
 trace = Tracer()
 
 
-# In[456]:
+# In[13]:
 
 def integracion3(sets_df, df):
     resultado = None
@@ -57,8 +57,9 @@ def integracion3(sets_df, df):
         no_vect = merge(left = entrenamiento, right = df_tipo_comp, how = 'left', left_on = componente,
                         right_on = 'component_id', copy = False).set_index('index')
         # Vectorizar el tipo de componente
-        vectorizacion = DataFrame(data= label_binarize(no_vect.component_type_id, classes=tipos),
-                                 index= no_vect.index, columns= tipos)
+        vectorizacion = DataFrame(data= label_binarize(no_vect.component_type_id, classes=tipos_comp),
+                                  index= no_vect.index,
+                                  columns= ['{}__{}'.format('components', comp_id) for comp_id in tipos_comp])
         # Multiplicar la matriz de la vectorizacion por la cantidad solicitada
         vectorizacion = vectorizacion.mul(df.loc[no_vect.index, cantidad], axis = 0)
         # Sumar el producto a la la suma de las matrices de vectorizacion
@@ -74,12 +75,7 @@ def integracion3(sets_df, df):
     return resultado
 
 
-# In[496]:
-
-'{}__{}'.format('algo', '1')
-
-
-# In[505]:
+# In[7]:
 
 def vectorizacion(df, nombCol, eliminarColOriginal = True):
     # limpieza de renglones sin valores
@@ -91,39 +87,45 @@ def vectorizacion(df, nombCol, eliminarColOriginal = True):
     # dataframe de la binarizacion respetando el indice
     array_binarizado = DataFrame(data= array_binarizado, index= df_temp.index,
                                  columns= ['{}__{}'.format(nombCol, str(clase)) for clase in clases])
-    df.drop(labels= nombCol, axis= 0, inplace= True)
+    if eliminarColOriginal:
+        df = df.drop(labels= nombCol, axis= 1)
     return merge(left= df, right= array_binarizado, how= 'left', left_index= True,
                  right_index= True, copy= False)
 
 
 # # Ejecucion de rutina
 
-# In[501]:
+# In[9]:
 
 from Metadatos import generaPathProyecto
 from CargaDatos import retornaSets
 path_proyecto = generaPathProyecto()
-# sets_df = retornaSets(path_proyecto)
+sets_df = retornaSets(path_proyecto)
 df = integracion1(sets_df = sets_df)
 df = limpieza2(df)
 
 
-# In[502]:
+# In[14]:
 
 df = merge(left= df, right= integracion3(sets_df= sets_df, df= df), how= 'left', left_index= True,
            right_index= True, copy= False)
 
 
-# In[503]:
+# In[18]:
 
 df.drop(labels= [u'component_id_1', u'quantity_1', u'component_id_2', u'quantity_2', 
                  u'component_id_3', u'quantity_3', u'component_id_4', u'quantity_4',
                  u'component_id_5', u'quantity_5', u'component_id_6', u'quantity_6',
-                 u'component_id_7', u'quantity_7', u'component_id_8', u'quantity_8'],
+                 u'component_id_7', u'quantity_7', u'component_id_8', u'quantity_8',
+                 u'tube_assembly_id'],
         axis= 1, inplace= True)
 
 
-# In[ ]:
+# In[20]:
 
-vectorizacion(df, 'other')
+df = vectorizacion(df, 'supplier')
+df = vectorizacion(df, 'material_id')
+df = vectorizacion(df, 'end_a')
+df = vectorizacion(df, 'end_x')
+df = vectorizacion(df, 'other')
 
