@@ -5,9 +5,10 @@
 
 # ## Carga de librerias
 
-# In[5]:
+# In[1]:
 
-from numpy import log, seed
+from numpy import log
+from numpy.random import seed
 from sklearn.metrics import make_scorer, mean_squared_error
 from sklearn.preprocessing import Imputer, StandardScaler
 from sklearn.tree import DecisionTreeRegressor
