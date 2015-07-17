@@ -5,6 +5,26 @@
 
 # ### Carga de librerias
 
+# In[ ]:
+
+from Metadatos import generaPathProyecto
+
+
+# In[ ]:
+
+from CargaDatos import cargaSets
+
+
+# In[3]:
+
+from Preparacion import preparaDf
+
+
+# In[2]:
+
+from Modelo import definirModelo
+
+
 # ### Definicion de Funciones
 
 # # Ejecucion de rutina
@@ -19,10 +39,7 @@ path_proyecto = generaPathProyecto()
 df = cargaTrain(path_proyecto = path_proyecto)
 
 
-# In[ ]:
-
-df = mejorarCalidad(df)
-
+# df = mejorarCalidad(df)
 
 # In[ ]:
 
