@@ -25,7 +25,7 @@ def RMSLE(y, y_pred):
 
 # In[ ]:
 
-def definirModelo(X, y, num_procesos = -1)
+def definirModelo(X, y, num_procesos = -1):
     seed(1989)
     imputador = Imputer()
     escalador = StandardScaler()
