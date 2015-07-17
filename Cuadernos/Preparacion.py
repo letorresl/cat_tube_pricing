@@ -8,6 +8,7 @@
 # In[1]:
 
 from pandas import merge, DataFrame
+from numpy.random import choice
 from sklearn.preprocessing import label_binarize
 
 
@@ -108,6 +109,33 @@ def preparaDf(df):
     df = vectorizacion(df, 'other')
     df = reordenaCols(df)
     return df
+
+
+# In[ ]:
+
+def separacionEntrenaObjetivo(df, semilla, prop_prueba = 0.30):
+    # SEPARACION SETS ENTRENAMIENTO/PRUEBA
+    # permutacion de indices
+    if prop_prueba != 0:
+        tam_prueba = int(floor(df.shape[0] * prop_prueba))
+        indices_prueba = choice(a= df.index.values, size= tam_prueba, replace= False)
+        # Valores
+        X_train = df[~df.index.isin(indices_prueba)].drop(labels = ['cost'],
+                                                          axis = 1)
+        X_test = df[df.index.isin(indices_prueba)].drop(labels = ['cost'],
+                                                        axis = 1)
+        # resultados
+        y_train = df[~df.index.isin(indices_prueba)][['cost']]
+        y_test = df[df.index.isin(indices_prueba)][['cost']]
+    else:
+        # Valores
+        X_train = df.drop(labels = ['cost'],
+                                                          axis = 1)
+        X_test = None
+        # resultados
+        y_train = df[['ptoF_Lat', 'ptoF_Long']]
+        y_test = None
+    return X_train, X_test, y_train, y_test
 
 
 # # Ejecucion de rutina
