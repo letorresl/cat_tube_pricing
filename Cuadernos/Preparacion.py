@@ -84,6 +84,13 @@ def vectorizacion(df, nombCol, eliminarColOriginal = True):
 
 # In[ ]:
 
+def reordenaCols(df):
+    columnas = df.columns
+    return df[sorted(columnas)]
+
+
+# In[ ]:
+
 def preparaDf(df):
     df = integracion1(sets_df = sets_df)
     df = limpieza2(df)
@@ -99,6 +106,7 @@ def preparaDf(df):
     df = vectorizacion(df, 'end_a')
     df = vectorizacion(df, 'end_x')
     df = vectorizacion(df, 'other')
+    df = reordenaCols(df)
     return df
 
 
