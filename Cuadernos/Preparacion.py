@@ -8,7 +8,7 @@
 # In[1]:
 
 from pandas import merge, DataFrame
-from numpy.random import choice
+from numpy.random import choice, seed
 from sklearn.preprocessing import label_binarize
 
 
@@ -111,9 +111,10 @@ def preparaDf(df):
     return df
 
 
-# In[ ]:
+# In[1]:
 
 def separacionEntrenaObjetivo(df, semilla, prop_prueba = 0.30):
+    seed(semilla)
     # SEPARACION SETS ENTRENAMIENTO/PRUEBA
     # permutacion de indices
     if prop_prueba != 0:
@@ -133,7 +134,7 @@ def separacionEntrenaObjetivo(df, semilla, prop_prueba = 0.30):
                                                           axis = 1)
         X_test = None
         # resultados
-        y_train = df[['ptoF_Lat', 'ptoF_Long']]
+        y_train = df[['cost']]
         y_test = None
     return X_train, X_test, y_train, y_test
 
