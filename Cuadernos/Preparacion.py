@@ -7,13 +7,8 @@
 
 # In[1]:
 
-from pandas import merge
-
-
-# In[2]:
-
+from pandas import merge, DataFrame
 from sklearn.preprocessing import label_binarize
-from pandas import DataFrame
 
 
 # ### Definicion de funciones
@@ -32,12 +27,6 @@ def integracion1(sets_df, train_o_envio = 'train'):
 def limpieza2(df):
     # limpieza de NaN's en las columnas de component_id_n
     return df.dropna(axis = 0, how = 'all', subset = ['component_id_{}'.format(i) for i in range(1, 9)])
-
-
-# In[5]:
-
-from IPython.core.debugger import Tracer
-trace = Tracer()
 
 
 # In[13]:
@@ -93,39 +82,45 @@ def vectorizacion(df, nombCol, eliminarColOriginal = True):
                  right_index= True, copy= False)
 
 
+# In[ ]:
+
+def preparaDf(df):
+    df = integracion1(sets_df = sets_df)
+    df = limpieza2(df)
+    df = merge(left= df, right= integracion3(sets_df= sets_df, df= df), how= 'left', left_index= True,
+               right_index= True, copy= False)
+    df = df.drop(labels= [u'component_id_1', u'quantity_1', u'component_id_2', u'quantity_2', 
+                          u'component_id_3', u'quantity_3', u'component_id_4', u'quantity_4',
+                          u'component_id_5', u'quantity_5', u'component_id_6', u'quantity_6',
+                          u'component_id_7', u'quantity_7', u'component_id_8', u'quantity_8',
+                          u'tube_assembly_id'], axis= 1)
+    df = vectorizacion(df, 'supplier')
+    df = vectorizacion(df, 'material_id')
+    df = vectorizacion(df, 'end_a')
+    df = vectorizacion(df, 'end_x')
+    df = vectorizacion(df, 'other')
+    return df
+
+
 # # Ejecucion de rutina
 
-# In[9]:
+# from Metadatos import generaPathProyecto
+# from CargaDatos import retornaSets
+# path_proyecto = generaPathProyecto()
+# sets_df = retornaSets(path_proyecto)
 
-from Metadatos import generaPathProyecto
-from CargaDatos import retornaSets
-path_proyecto = generaPathProyecto()
-sets_df = retornaSets(path_proyecto)
-df = integracion1(sets_df = sets_df)
-df = limpieza2(df)
-
-
-# In[14]:
-
-df = merge(left= df, right= integracion3(sets_df= sets_df, df= df), how= 'left', left_index= True,
-           right_index= True, copy= False)
-
-
-# In[18]:
-
-df.drop(labels= [u'component_id_1', u'quantity_1', u'component_id_2', u'quantity_2', 
-                 u'component_id_3', u'quantity_3', u'component_id_4', u'quantity_4',
-                 u'component_id_5', u'quantity_5', u'component_id_6', u'quantity_6',
-                 u'component_id_7', u'quantity_7', u'component_id_8', u'quantity_8',
-                 u'tube_assembly_id'],
-        axis= 1, inplace= True)
-
-
-# In[20]:
-
-df = vectorizacion(df, 'supplier')
-df = vectorizacion(df, 'material_id')
-df = vectorizacion(df, 'end_a')
-df = vectorizacion(df, 'end_x')
-df = vectorizacion(df, 'other')
-
+# df = integracion1(sets_df = sets_df)
+# df = limpieza2(df)
+# df = merge(left= df, right= integracion3(sets_df= sets_df, df= df), how= 'left', left_index= True,
+#            right_index= True, copy= False)
+# df.drop(labels= [u'component_id_1', u'quantity_1', u'component_id_2', u'quantity_2', 
+#                  u'component_id_3', u'quantity_3', u'component_id_4', u'quantity_4',
+#                  u'component_id_5', u'quantity_5', u'component_id_6', u'quantity_6',
+#                  u'component_id_7', u'quantity_7', u'component_id_8', u'quantity_8',
+#                  u'tube_assembly_id'],
+#         axis= 1, inplace= True)
+# df = vectorizacion(df, 'supplier')
+# df = vectorizacion(df, 'material_id')
+# df = vectorizacion(df, 'end_a')
+# df = vectorizacion(df, 'end_x')
+# df = vectorizacion(df, 'other')
