@@ -26,7 +26,7 @@ def RMSLE(y, y_pred):
 
 # In[ ]:
 
-def definirModelo(X, y, num_procesos = -1):
+def definirModelo(num_procesos = -1):
     seed(1989)
     imputador = Imputer()
     escalador = StandardScaler()
@@ -44,7 +44,7 @@ def definirModelo(X, y, num_procesos = -1):
                           scoring = puntuador,
                           n_jobs = num_procesos)
     # Ajuste de rejilla
-    return modelo.fit(X = X, y = y)
+    return modelo
 
 
 # # Ejecucion de rutina
