@@ -113,6 +113,7 @@ def preparaDf(sets_df):
     df = vectorizacion(df, 'end_x')
     df = vectorizacion(df, 'other')
     df = reordenaCols(df)
+    df = df.astype('float')
     return df
 
 
