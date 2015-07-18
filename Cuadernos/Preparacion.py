@@ -93,8 +93,8 @@ def reordenaCols(df):
 
 # In[ ]:
 
-def preparaDf(sets_df):
-    df = integracion1(sets_df = sets_df)
+def preparaDf(sets_df,  train_o_envio = 'train'):
+    df = integracion1(sets_df = sets_df,  train_o_envio =  train_o_envio)
     df = limpieza2(df)
     df = merge(left= df, right= integracion3(sets_df= sets_df, df= df), how= 'left', left_index= True,
                right_index= True, copy= False)
