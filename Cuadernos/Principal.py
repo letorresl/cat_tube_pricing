@@ -5,23 +5,11 @@
 
 # ### Carga de librerias
 
-# In[ ]:
+# In[1]:
 
 from Metadatos import generaPathProyecto
-
-
-# In[ ]:
-
-from CargaDatos import cargaSets
-
-
-# In[3]:
-
-from Preparacion import preparaDf
-
-
-# In[2]:
-
+from CargaDatos import retornaSets
+from Preparacion import preparaDf, separacionEntrenaObjetivo
 from Modelo import definirModelo
 
 
@@ -29,29 +17,20 @@ from Modelo import definirModelo
 
 # # Ejecucion de rutina
 
-# In[ ]:
+# In[2]:
 
 path_proyecto = generaPathProyecto()
+sets_df = retornaSets(path_proyecto = path_proyecto)
+df = preparaDf(sets_df)
+X_train, X_test, y_train, y_test = separacionEntrenaObjetivo(df, semilla = 1962)
 
 
-# In[ ]:
-
-df = cargaTrain(path_proyecto = path_proyecto)
-
-
-# df = mejorarCalidad(df)
-
-# In[ ]:
-
-X_train, X_test, y_train, y_test = preparacionDf(df, semilla = 1989)
-
-
-# In[ ]:
+# In[3]:
 
 modelo = definirModelo()
 
 
-# In[ ]:
+# In[4]:
 
 modelo.fit(X = X_train.values, y = y_train.values)
 
