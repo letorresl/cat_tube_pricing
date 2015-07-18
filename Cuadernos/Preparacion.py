@@ -5,9 +5,10 @@
 
 # ### Carga de librerias
 
-# In[1]:
+# In[2]:
 
 from pandas import merge, DataFrame
+from numpy import floor
 from numpy.random import choice, seed
 from sklearn.preprocessing import label_binarize
 
