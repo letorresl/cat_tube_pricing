@@ -5,7 +5,7 @@
 
 # ### Carga de librerias
 
-# In[2]:
+# In[1]:
 
 from pandas import merge, DataFrame
 from numpy import floor
@@ -102,7 +102,11 @@ def preparaDf(sets_df):
                           u'component_id_3', u'quantity_3', u'component_id_4', u'quantity_4',
                           u'component_id_5', u'quantity_5', u'component_id_6', u'quantity_6',
                           u'component_id_7', u'quantity_7', u'component_id_8', u'quantity_8',
-                          u'tube_assembly_id'], axis= 1)
+                          u'tube_assembly_id',
+                          # IMPORTANTE: eliminar la fecha de la cotizacion es una medida temporal
+                          # PORHACER: transformar la variable fecha de cotizacion a una tipo
+                          # float (por ejemplo, una variable para year, otra para month, etc)
+                          u'quote_date'], axis= 1)
     df = vectorizacion(df, 'supplier')
     df = vectorizacion(df, 'material_id')
     df = vectorizacion(df, 'end_a')
