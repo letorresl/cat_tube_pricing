@@ -13,7 +13,18 @@ from datetime import datetime
 from regex import compile as comp
 
 
+# In[ ]:
+
+from sklearn.metrics import mean_squared_error
+
+
 # ### Definicion de funciones
+
+# In[ ]:
+
+def RMSLE(y, y_pred):
+    return mean_squared_error(log(y + 1), log(y_pred + 1))**0.5
+
 
 # In[ ]:
 
