@@ -18,21 +18,23 @@ from sklearn.grid_search import GridSearchCV
 
 # ## Definicion de funciones
 
-# In[2]:
+# In[7]:
 
-def RMSLE(y, y_pred, sample_weight= None):
-    return mean_squared_error(log(y + 1), log(y_pred + 1), sample_weight= sample_weight)**0.5
+def RMSLE(y, y_pred):
+    return mean_squared_error(log(y + 1), log(y_pred + 1))**0.5
 
 
-# In[ ]:
+# In[3]:
 
 def definirModelo(num_procesos = -1):
     seed(1989)
+    RMSLE_score = make_scorer(RMSLE, greater_is_better=False)
+    
     imputador = Imputer()
     escalador = StandardScaler()
     #selectorVar = SelectKBest(k = 30)
     decisor = DecisionTreeRegressor(random_state = 1962)
-    puntuador = RMSLE
+    puntuador = RMSLE_score
     tuberia = Pipeline(steps = [('imputador', imputador), ('escalador', escalador),
                                 ('decisor', decisor)])
     # Definicion de parametros a ajustar en gridsearch
