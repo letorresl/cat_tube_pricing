@@ -20,8 +20,8 @@ from sklearn.grid_search import GridSearchCV
 
 # In[2]:
 
-def RMSLE(y, y_pred):
-    return mean_squared_error(log(y + 1), log(y_pred + 1))**0.5
+def RMSLE(y, y_pred, sample_weight= None):
+    return mean_squared_error(log(y + 1), log(y_pred + 1), sample_weight= sample_weight)**0.5
 
 
 # In[ ]:
