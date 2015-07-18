@@ -15,6 +15,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.grid_search import GridSearchCV
 
 
+# In[ ]:
+
+from Metadatos import RMSLE
+
+
 # ## Definicion de funciones
 
 # In[3]:
