@@ -18,6 +18,11 @@ from regex import compile as comp
 from sklearn.metrics import mean_squared_error
 
 
+# In[ ]:
+
+from numpy import log
+
+
 # ### Definicion de funciones
 
 # In[ ]:
