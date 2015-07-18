@@ -7,7 +7,6 @@
 
 # In[1]:
 
-from numpy import log
 from numpy.random import seed
 from sklearn.metrics import make_scorer
 from sklearn.preprocessing import Imputer, StandardScaler
