@@ -13,9 +13,15 @@ from numpy.random import choice, seed
 from sklearn.preprocessing import label_binarize
 
 
+# In[19]:
+
+#from IPython.core.debugger import Tracer
+#tracer = Tracer()
+
+
 # ### Definicion de funciones
 
-# In[3]:
+# In[30]:
 
 def integracion1(sets_df, train_o_envio = 'train'):
     col_llave = 'tube_assembly_id'
@@ -28,12 +34,16 @@ def integracion1(sets_df, train_o_envio = 'train'):
 
 def limpieza2(df):
     # limpieza de NaN's en las columnas de component_id_n
-    return df.dropna(axis = 0, how = 'all', subset = ['component_id_{}'.format(i) for i in range(1, 9)])
+    #return df.dropna(axis = 0, how = 'all', subset = ['component_id_{}'.format(i) for i in range(1, 9)])
+    cols_componentes = ['component_id_{}'.format(i) for i in range(1, 9)]
+    df[cols_componentes] = df[cols_componentes].fillna('')
+    return df
 
 
-# In[13]:
+# In[87]:
 
 def integracion3(sets_df, df):
+    #tracer()
     resultado = None
     # Establecer las clases que tendra la vectorizacion
     tipos_comp = sorted(sets_df['components'].component_type_id.unique())
@@ -41,6 +51,8 @@ def integracion3(sets_df, df):
     df_tipo_comp = sets_df['components'][['component_id', 'component_type_id']]
     # Iterar para cada columna componente
     for i in range(1, 9):
+        #if i == 2:
+            #tracer()
         # la cantidad y componente correspondientes para la iteracion
         cantidad, componente = 'quantity_{}'.format(str(i)), 'component_id_{}'.format(str(i))
         # Agregar al df de entrenamiento la columna de "tipo de componente" para el componente_i
@@ -48,25 +60,27 @@ def integracion3(sets_df, df):
         no_vect = merge(left = entrenamiento, right = df_tipo_comp, how = 'left', left_on = componente,
                         right_on = 'component_id', copy = False).set_index('index')
         # Vectorizar el tipo de componente
-        vectorizacion = DataFrame(data= label_binarize(no_vect.component_type_id, classes=tipos_comp),
-                                  index= no_vect.index,
-                                  columns= ['{}__{}'.format('components', comp_id) for comp_id in tipos_comp])
-        # Multiplicar la matriz de la vectorizacion por la cantidad solicitada
-        vectorizacion = vectorizacion.mul(df.loc[no_vect.index, cantidad], axis = 0)
-        # Sumar el producto a la la suma de las matrices de vectorizacion
-        #try:
-        #    resultado += vectorizacion
-        #except UnboundLocalError:
-        #    resultado = vectorizacion        
-        if resultado is not None:
-            resultado = resultado.add(vectorizacion, axis= 0, fill_value= 0)
-        else:
-            resultado = vectorizacion
+        # AQUI ESTA EL PROBLEMA -->
+        if no_vect.shape[0] != 0:
+            vectorizacion = DataFrame(data= label_binarize(no_vect.component_type_id, classes=tipos_comp),
+                                      index= no_vect.index,
+                                      columns= ['{}__{}'.format('components', comp_id) for comp_id in tipos_comp])
+            # Multiplicar la matriz de la vectorizacion por la cantidad solicitada
+            vectorizacion = vectorizacion.mul(df.loc[no_vect.index, cantidad], axis = 0)
+            # Sumar el producto a la la suma de las matrices de vectorizacion
+            #try:
+            #    resultado += vectorizacion
+            #except UnboundLocalError:
+            #    resultado = vectorizacion        
+            if resultado is not None:
+                resultado = resultado.add(vectorizacion, axis= 0, fill_value= 0)
+            else:
+                resultado = vectorizacion
         #trace()
     return resultado
 
 
-# In[7]:
+# In[6]:
 
 def vectorizacion(df, nombCol, eliminarColOriginal = True):
     # limpieza de renglones sin valores
@@ -84,18 +98,17 @@ def vectorizacion(df, nombCol, eliminarColOriginal = True):
                  right_index= True, copy= False)
 
 
-# In[ ]:
+# In[7]:
 
 def reordenaCols(df):
     columnas = df.columns
     return df[sorted(columnas)]
 
 
-# In[ ]:
+# In[75]:
 
 def preparaDf(sets_df,  train_o_envio = 'train'):
     df = integracion1(sets_df = sets_df,  train_o_envio =  train_o_envio)
-    df = limpieza2(df)
     df = merge(left= df, right= integracion3(sets_df= sets_df, df= df), how= 'left', left_index= True,
                right_index= True, copy= False)
     df = df.drop(labels= [u'component_id_1', u'quantity_1', u'component_id_2', u'quantity_2', 
@@ -117,7 +130,7 @@ def preparaDf(sets_df,  train_o_envio = 'train'):
     return df
 
 
-# In[1]:
+# In[9]:
 
 def separacionEntrenaObjetivo(df, semilla, prop_prueba = 0.30):
     seed(semilla)
@@ -136,8 +149,7 @@ def separacionEntrenaObjetivo(df, semilla, prop_prueba = 0.30):
         y_test = df[df.index.isin(indices_prueba)][['cost']]
     else:
         # Valores
-        X_train = df.drop(labels = ['cost'],
-                                                          axis = 1)
+        X_train = df.drop(labels = ['cost'], axis = 1)
         X_test = None
         # resultados
         y_train = df[['cost']]
