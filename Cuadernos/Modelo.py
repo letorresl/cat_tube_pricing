@@ -7,9 +7,8 @@
 
 # In[1]:
 
-from numpy import log
 from numpy.random import seed
-from sklearn.metrics import make_scorer, mean_squared_error
+from sklearn.metrics import make_scorer
 from sklearn.preprocessing import Imputer, StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.pipeline import Pipeline
@@ -17,12 +16,6 @@ from sklearn.grid_search import GridSearchCV
 
 
 # ## Definicion de funciones
-
-# In[7]:
-
-def RMSLE(y, y_pred):
-    return mean_squared_error(log(y + 1), log(y_pred + 1))**0.5
-
 
 # In[3]:
 
