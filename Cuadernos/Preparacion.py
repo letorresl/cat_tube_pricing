@@ -117,7 +117,7 @@ class preparaDf:
                               u'quote_date'], axis= 1)
         for columna in ['supplier', 'material_id', 'end_a', 'end_x', 'other']:
             df = self.vectorizacion(df, columna, eliminarColOriginal = True,
-                               self.matrices_vectorizadas[columna] if train_o_envio == 'test' else None)
+                                    clases= self.matrices_vectorizadas[columna] if train_o_envio == 'test' else None)
         df = self.reordenaCols(df)
         #df = df.astype('float')
         return df
