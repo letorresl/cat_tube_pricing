@@ -5,7 +5,7 @@
 
 # ### Carga de librerias
 
-# In[1]:
+# In[7]:
 
 from Metadatos import generaPathProyecto, RMSLE
 from CargaDatos import retornaSets
@@ -13,7 +13,7 @@ from Preparacion import preparaDf, separacionEntrenaObjetivo
 from Modelo import definirModelo
 
 
-# In[42]:
+# In[8]:
 
 from CargaDatos import generaPath
 
@@ -22,96 +22,81 @@ from CargaDatos import generaPath
 
 # # Ejecucion de rutina
 
-# In[2]:
+# In[9]:
 
 path_proyecto = generaPathProyecto()
 sets_df = retornaSets(path_proyecto = path_proyecto)
 
 
-# In[3]:
+# In[10]:
 
 prepDf = preparaDf()
 
 
-# In[4]:
+# In[11]:
 
 df = prepDf.preparar(sets_df)
 
 
-# In[6]:
-
-df_envio = prepDf.preparar(sets_df, train_o_envio= 'test')
-
-
-# In[30]:
-
-df_envio.head(4)
-
-
-# In[10]:
+# In[12]:
 
 X_train, X_test, y_train, y_test = separacionEntrenaObjetivo(df, semilla = 1962, prop_prueba= 0.3)
 
 
-# In[11]:
+# In[13]:
 
 modelo = definirModelo()
 
 
-# In[12]:
+# In[14]:
 
 modelo.fit(X = X_train.values, y = y_train.values)
 
 
-# In[13]:
+# In[24]:
 
-modelo.best_score_
-
-
-# In[14]:
-
-RMSLE(y_train, modelo.predict(X_train))
+modelo.best_params_
 
 
 # In[15]:
 
-RMSLE(y_test, modelo.predict(X_test))
+modelo.best_score_
+
+
+# In[16]:
+
+RMSLE(y_train, modelo.predict(X_train))
 
 
 # In[17]:
 
-X_envio = prepDf.preparar(sets_df, train_o_envio= 'test')
+RMSLE(y_test, modelo.predict(X_test))
 
 
 # In[18]:
 
+X_envio = prepDf.preparar(sets_df, train_o_envio= 'test')
+
+
+# In[19]:
+
 y_envio = modelo.predict(X_envio.values)
 
 
-# In[31]:
+# In[20]:
 
 import pandas as pd
 
 
-# In[37]:
+# In[21]:
 
 y_envio = pd.DataFrame(data= y_envio, index= range(1,y_envio.shape[0] + 1), columns= ['cost'])
 y_envio.index.name = 'id'
 
 
-# In[41]:
+# In[23]:
 
-path_proyecto
-
-
-# In[44]:
-
-generaPath(path_proyecto, 'y_envio')
-
-
-# In[45]:
-
-y_envio.to_csv(path_or_buf= generaPath(path_proyecto, 'y_envio.csv))
+y_envio.to_csv(path_or_buf= generaPath(path_proyecto, 'y_envio2.csv'))
 
 
 # In[ ]:
