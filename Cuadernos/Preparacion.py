@@ -103,8 +103,8 @@ class preparaDf:
         return df[sorted(columnas)]
 
     def preparar(self, sets_df,  train_o_envio = 'train'):
-        df = integracion1(sets_df = sets_df,  train_o_envio =  train_o_envio)
-        df = merge(left= df, right= integracion3(sets_df= sets_df, df= df), how= 'left', left_index= True,
+        df = self.integracion1(sets_df = sets_df,  train_o_envio =  train_o_envio)
+        df = merge(left= df, right= self.integracion3(sets_df= sets_df, df= df), how= 'left', left_index= True,
                    right_index= True, copy= False)
         df = df.drop(labels= [u'component_id_1', u'quantity_1', u'component_id_2', u'quantity_2', 
                               u'component_id_3', u'quantity_3', u'component_id_4', u'quantity_4',
@@ -116,9 +116,9 @@ class preparaDf:
                               # float (por ejemplo, una variable para year, otra para month, etc)
                               u'quote_date'], axis= 1)
         for columna in ['supplier', 'material_id', 'end_a', 'end_x', 'other']:
-            df = vectorizacion(df, columna,
+            df = self.vectorizacion(df, columna,
                                self.matrices_vectorizadas[columna] if train_o_envio == 'test' else None)
-        df = reordenaCols(df)
+        df = self.reordenaCols(df)
         df = df.astype('float')
         return df
 
