@@ -35,7 +35,7 @@ def limpieza2(df):
 
 class preparaDf:
     def __init__(self):
-        matrices_vectorizadas = {}
+        self.matrices_vectorizadas = {}
     
     def integracion1(self, sets_df, train_o_envio = 'train'):
         col_llave = 'tube_assembly_id'
