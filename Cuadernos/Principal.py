@@ -5,7 +5,7 @@
 
 # ### Carga de librerias
 
-# In[7]:
+# In[1]:
 
 from Metadatos import generaPathProyecto, RMSLE
 from CargaDatos import retornaSets
@@ -13,7 +13,7 @@ from Preparacion import preparaDf, separacionEntrenaObjetivo
 from Modelo import definirModelo
 
 
-# In[8]:
+# In[2]:
 
 from CargaDatos import generaPath
 
@@ -22,73 +22,78 @@ from CargaDatos import generaPath
 
 # # Ejecucion de rutina
 
-# In[9]:
+# In[3]:
 
 path_proyecto = generaPathProyecto()
 sets_df = retornaSets(path_proyecto = path_proyecto)
 
 
-# In[10]:
+# In[4]:
 
 prepDf = preparaDf()
 
 
-# In[11]:
+# In[5]:
 
 df = prepDf.preparar(sets_df)
 
 
-# In[12]:
+# In[6]:
 
 X_train, X_test, y_train, y_test = separacionEntrenaObjetivo(df, semilla = 1962, prop_prueba= 0.3)
 
 
-# In[13]:
+# In[7]:
 
 modelo = definirModelo()
 
 
-# In[14]:
-
-modelo.fit(X = X_train.values, y = y_train.values)
-
-
-# In[24]:
-
-modelo.best_params_
-
-
-# In[15]:
-
-modelo.best_score_
-
-
-# In[16]:
-
-RMSLE(y_train, modelo.predict(X_train))
-
-
 # In[17]:
 
-RMSLE(y_test, modelo.predict(X_test))
+y_train.values.reshape(y_train.shape[0],)
 
 
 # In[18]:
 
-X_envio = prepDf.preparar(sets_df, train_o_envio= 'test')
+modelo.fit(X = X_train.values, y = y_train.values.reshape(y_train.shape[0],))
+
+
+# In[9]:
+
+modelo.best_params_
+
+
+# In[10]:
+
+modelo.best_score_
+
+
+# In[11]:
+
+RMSLE(y_train, modelo.predict(X_train))
+
+
+# In[12]:
+
+RMSLE(y_test, modelo.predict(X_test))
 
 
 # In[19]:
 
-y_envio = modelo.predict(X_envio.values)
+X_envio = prepDf.preparar(sets_df, train_o_envio= 'test')
 
 
 # In[20]:
 
-import pandas as pd
+y_envio = modelo.predict(X_envio.values)
 
 
 # In[21]:
+
+import pandas as pd
+
+
+# In[22]:
 
 y_envio = pd.DataFrame(data= y_envio, index= range(1,y_envio.shape[0] + 1), columns= ['cost'])
 y_envio.index.name = 'id'
@@ -96,7 +101,7 @@ y_envio.index.name = 'id'
 
 # In[23]:
 
-y_envio.to_csv(path_or_buf= generaPath(path_proyecto, 'y_envio2.csv'))
+y_envio.to_csv(path_or_buf= generaPath(path_proyecto, 'y_envio3.csv'))
 
 
 # In[ ]:
