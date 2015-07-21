@@ -119,7 +119,7 @@ class preparaDf:
             df = self.vectorizacion(df, columna, eliminarColOriginal = True,
                                     clases= self.matrices_vectorizadas[columna] if train_o_envio == 'test' else None)
         df = self.reordenaCols(df)
-        #df = df.astype('float')
+        df = df.astype('float')
         return df
 
 
