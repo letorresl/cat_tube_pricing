@@ -116,10 +116,10 @@ class preparaDf:
                               # float (por ejemplo, una variable para year, otra para month, etc)
                               u'quote_date'], axis= 1)
         for columna in ['supplier', 'material_id', 'end_a', 'end_x', 'other']:
-            df = self.vectorizacion(df, columna,
+            df = self.vectorizacion(df, columna, eliminarColOriginal = True,
                                self.matrices_vectorizadas[columna] if train_o_envio == 'test' else None)
         df = self.reordenaCols(df)
-        df = df.astype('float')
+        #df = df.astype('float')
         return df
 
 
