@@ -15,47 +15,47 @@ from CargaDatos import generaPath
 from Salida import generarEnvio
 
 
-# In[35]:
+# In[2]:
 
 import ggplot as gg
 
 
-# In[48]:
+# In[3]:
 
 get_ipython().magic(u'matplotlib inline')
 
 
 # ### Definicion de funciones
 
-# In[ ]:
+# In[4]:
 
 def validarModelo():
-    dScores = {'best' : modelo.best_score_,
+    dScores = {'best' : -modelo.best_score_,
                'train' : RMSLE(y_train, modelo.predict(X_train)),
                'test' : RMSLE(y_test, modelo.predict(X_test))}
     print str('La mejor puntuacion de la crossvalidacion fue: {}\n' +
               'La puntuacion del entrenamiento fue: {}\n' +
-              'La puntuacion de la prueba fue: {}').format(dScores**)
+              'La puntuacion de la prueba fue: {}').format(dScores['best'], dScores['train'], dScores['test'])
 
 
 # # Ejecucion de rutina
 
 # ### Entrenamiento
 
-# In[3]:
+# In[5]:
 
 path_proyecto = generaPathProyecto()
 sets_df = retornaSets(path_proyecto = path_proyecto)
 
 
-# In[4]:
+# In[6]:
 
 prepDf = preparaDf()
 df = prepDf.preparar(sets_df)
 X_train, X_test, y_train, y_test = separacionEntrenaObjetivo(df, semilla = 1962, prop_prueba= 0.3)
 
 
-# In[7]:
+# In[19]:
 
 modelo = definirModelo()
 modelo.fit(X = X_train.values, y = y_train.values.reshape(y_train.shape[0],))
@@ -63,10 +63,64 @@ modelo.fit(X = X_train.values, y = y_train.values.reshape(y_train.shape[0],))
 
 # ### Presentacion de resultados
 
-# In[ ]:
+# In[22]:
+
+modelo.best_params_
+
+
+# In[20]:
 
 validarModelo()
 
+
+# ### Eliminacion de valores atipicos
+
+# In[9]:
+
+import pandas as pd
+
+
+# In[10]:
+
+vectErrores = (y_train - pd.DataFrame(data= modelo.predict(X_train), index= X_train.index, columns= ['cost']))**2
+
+
+# In[11]:
+
+cuartiles = vectErrores.quantile(q= [0.25, 0.75])
+
+
+# In[12]:
+
+ric = cuartiles.iloc[1, 0] - cuartiles.iloc[0, 0]
+
+
+# In[13]:
+
+cuartiles.iloc[0, 0] - 1.5*ric, cuartiles.iloc[1, 0] + 1.5*ric
+
+
+# In[14]:
+
+indice = vectErrores[vectErrores.cost < cuartiles.iloc[1, 0] + 1.5*ric].index
+
+
+# In[15]:
+
+X_train = X_train.ix[indice,]
+
+
+# In[16]:
+
+y_train = y_train.ix[indice,]
+
+
+# In[36]:
+
+gg.ggplot(gg.aes(x= 'cost'), data= vectErrores) + gg.geom_boxplot()
+
+
+# ### Experimentacion
 
 # In[33]:
 
@@ -85,13 +139,13 @@ gg.ggplot(gg.aes(x= 'nombre', y= 'importancia'), data= impDf[impDf.importancia >
 
 # ### Envio
 
-# In[19]:
+# In[23]:
 
 X_envio = prepDf.preparar(sets_df, train_o_envio= 'test')
 generarEnvio(modelo, X_envio)
 
 
-# In[ ]:
+# In[25]:
 
-resultados = validarModelo(modelo)
+get_ipython().magic(u'pinfo validarModelo')
 
