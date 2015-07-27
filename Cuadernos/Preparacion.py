@@ -5,15 +5,15 @@
 
 # ### Carga de librerias
 
-# In[1]:
+# In[38]:
 
-from pandas import merge, DataFrame
+from pandas import merge, DataFrame, DatetimeIndex
 from numpy import floor
 from numpy.random import choice, seed
 from sklearn.preprocessing import label_binarize
 
 
-# In[19]:
+# In[17]:
 
 #from IPython.core.debugger import Tracer
 #tracer = Tracer()
@@ -21,7 +21,7 @@ from sklearn.preprocessing import label_binarize
 
 # ### Definicion de funciones
 
-# In[ ]:
+# In[18]:
 
 def limpieza2(df):
     # limpieza de NaN's en las columnas de component_id_n
@@ -31,7 +31,7 @@ def limpieza2(df):
     return df
 
 
-# In[ ]:
+# In[41]:
 
 class preparaDf:
     def __init__(self):
@@ -106,6 +106,9 @@ class preparaDf:
         df = self.integracion1(sets_df = sets_df,  train_o_envio =  train_o_envio)
         df = merge(left= df, right= self.integracion3(sets_df= sets_df, df= df), how= 'left', left_index= True,
                    right_index= True, copy= False)
+        df['year'] = DatetimeIndex(df.quote_date).year
+        df['month'] = DatetimeIndex(df.quote_date).month
+        df['day'] = DatetimeIndex(df.quote_date).day
         df = df.drop(labels= [u'component_id_1', u'quantity_1', u'component_id_2', u'quantity_2', 
                               u'component_id_3', u'quantity_3', u'component_id_4', u'quantity_4',
                               u'component_id_5', u'quantity_5', u'component_id_6', u'quantity_6',
@@ -123,7 +126,7 @@ class preparaDf:
         return df
 
 
-# In[9]:
+# In[20]:
 
 def separacionEntrenaObjetivo(df, semilla, prop_prueba = 0.30):
     seed(semilla)
@@ -152,10 +155,19 @@ def separacionEntrenaObjetivo(df, semilla, prop_prueba = 0.30):
 
 # # Ejecucion de rutina
 
+# from datetime import datetime as dt
+# f = dt.strptime('2015-07-28', '%Y-%m-%d')
+# f.weekday()
+# dt.strftime()
 # from Metadatos import generaPathProyecto
 # from CargaDatos import retornaSets
 # path_proyecto = generaPathProyecto()
 # sets_df = retornaSets(path_proyecto)
+# prepDf = preparaDf()
+# df = prepDf.preparar(sets_df)
+# import pandas as pd
+# pd.DatetimeIndex(df.quote_date).day
+# df.quote_date[0]
 
 # df = integracion1(sets_df = sets_df)
 # df = limpieza2(df)
