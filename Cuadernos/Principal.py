@@ -32,72 +32,57 @@ import numpy as np
 
 # ### Definicion de funciones
 
-# In[21]:
-
-def validarModelo():
-    dScores = {'best' : -modelo.best_score_,
-               'train' : RMSLE(y_train, np.exp(modelo.predict(X_train)) - 1),
-               'test' : RMSLE(y_test, np.exp(modelo.predict(X_test)) - 1)}
-    print str('La mejor puntuacion de la crossvalidacion fue: {}\n' +
-              'La puntuacion del entrenamiento fue: {}\n' +
-              'La puntuacion de la prueba fue: {}').format(dScores['best'], dScores['train'], dScores['test'])
-
-
 # In[11]:
 
 def logTransf(df):
     return np.log(df + 1)
 
-
-# In[19]:
-
 def antilogTransf(df):
     return np.exp(df) - 1
+
+
+# In[37]:
+
+def validarModelo():
+    dScores = {'best' : -modelo.best_score_,
+               'train' : RMSLE(y_train, antilogTransf(modelo.predict(X_train))),
+               'test' : RMSLE(y_test, antilogTransf(modelo.predict(X_test)))}
+    print str('La mejor puntuacion de la crossvalidacion fue: {}\n' +
+              'La puntuacion del entrenamiento fue: {}\n' +
+              'La puntuacion de la prueba fue: {}').format(dScores['best'], dScores['train'], dScores['test'])
 
 
 # # Ejecucion de rutina
 
 # ### Entrenamiento
 
-# In[6]:
+# In[38]:
 
 path_proyecto = generaPathProyecto()
 sets_df = retornaSets(path_proyecto = path_proyecto)
 
 
-# In[8]:
+# In[39]:
 
 prepDf = preparaDf()
 df = prepDf.preparar(sets_df)
 X_train, X_test, y_train, y_test = separacionEntrenaObjetivo(df, semilla = 1962, prop_prueba= 0.3)
 
 
-# In[14]:
-
-y_train = logTransf(y_train)
-y_test = logTransf(y_test)
-
-
-# In[20]:
-
-y_train = antilogTransf(y_train)
-y_test = antilogTransf(y_test)
-
-
-# In[15]:
+# In[40]:
 
 modelo = definirModelo()
-modelo.fit(X = X_train.values, y = y_train.values.reshape(y_train.shape[0],))
+modelo.fit(X = X_train.values, y = logTransf(y_train).values.reshape(y_train.shape[0],))
 
 
 # ### Presentacion de resultados
 
-# In[16]:
+# In[41]:
 
 modelo.best_params_
 
 
-# In[22]:
+# In[42]:
 
 validarModelo()
 
@@ -172,6 +157,36 @@ gg.ggplot(gg.aes(x= 'nombre', y= 'importancia'), data= impDf[impDf.importancia >
 
 X_envio = prepDf.preparar(sets_df, train_o_envio= 'test')
 generarEnvio(modelo, X_envio)
+
+
+# In[24]:
+
+import pandas as pd
+
+
+# In[25]:
+
+path_envio = '~/Proyectos/caterpillar_tube_pricing/Bases/Locales/y_envio_20150727_142316.txt'
+
+
+# In[27]:
+
+y_envio = pd.read_csv(path_envio)
+
+
+# In[28]:
+
+y_envio.cost = antilogTransf(y_envio.cost)
+
+
+# In[33]:
+
+path_envio2 = '/home/numerodelcaos_gmail_com/Proyectos/caterpillar_tube_pricing/Bases/Locales/y_envio_20150727_142316_2.txt'
+
+
+# In[35]:
+
+y_envio.to_csv(path_envio2, index = False)
 
 
 # In[25]:
