@@ -25,37 +25,66 @@ import ggplot as gg
 get_ipython().magic(u'matplotlib inline')
 
 
+# In[4]:
+
+import numpy as np
+
+
 # ### Definicion de funciones
 
-# In[4]:
+# In[21]:
 
 def validarModelo():
     dScores = {'best' : -modelo.best_score_,
-               'train' : RMSLE(y_train, modelo.predict(X_train)),
-               'test' : RMSLE(y_test, modelo.predict(X_test))}
+               'train' : RMSLE(y_train, np.exp(modelo.predict(X_train)) - 1),
+               'test' : RMSLE(y_test, np.exp(modelo.predict(X_test)) - 1)}
     print str('La mejor puntuacion de la crossvalidacion fue: {}\n' +
               'La puntuacion del entrenamiento fue: {}\n' +
               'La puntuacion de la prueba fue: {}').format(dScores['best'], dScores['train'], dScores['test'])
+
+
+# In[11]:
+
+def logTransf(df):
+    return np.log(df + 1)
+
+
+# In[19]:
+
+def antilogTransf(df):
+    return np.exp(df) - 1
 
 
 # # Ejecucion de rutina
 
 # ### Entrenamiento
 
-# In[5]:
+# In[6]:
 
 path_proyecto = generaPathProyecto()
 sets_df = retornaSets(path_proyecto = path_proyecto)
 
 
-# In[6]:
+# In[8]:
 
 prepDf = preparaDf()
 df = prepDf.preparar(sets_df)
 X_train, X_test, y_train, y_test = separacionEntrenaObjetivo(df, semilla = 1962, prop_prueba= 0.3)
 
 
-# In[19]:
+# In[14]:
+
+y_train = logTransf(y_train)
+y_test = logTransf(y_test)
+
+
+# In[20]:
+
+y_train = antilogTransf(y_train)
+y_test = antilogTransf(y_test)
+
+
+# In[15]:
 
 modelo = definirModelo()
 modelo.fit(X = X_train.values, y = y_train.values.reshape(y_train.shape[0],))
@@ -63,12 +92,12 @@ modelo.fit(X = X_train.values, y = y_train.values.reshape(y_train.shape[0],))
 
 # ### Presentacion de resultados
 
-# In[22]:
+# In[16]:
 
 modelo.best_params_
 
 
-# In[20]:
+# In[22]:
 
 validarModelo()
 
