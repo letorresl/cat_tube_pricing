@@ -27,7 +27,7 @@ from Metadatos import generaPathProyecto, antilogTransf
 
 def generarEnvio(modelo, X_envio):
     y_envio = modelo.predict(X_envio.values)
-    y_envio.cost = antilogTransf(y_envio.cost)
+    y_envio = antilogTransf(y_envio)
     y_envio = DataFrame(data= y_envio, index= range(1,y_envio.shape[0] + 1), columns= ['cost'])
     y_envio.index.name = 'id'
     guardarDf(y_envio, 'y_envio', True)
