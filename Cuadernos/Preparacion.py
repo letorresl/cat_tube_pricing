@@ -164,9 +164,9 @@ class preparaDf:
         lista_conexion = ['connection_type_id_{}'.format(i) for i in range(1, 5)]
         l_col_llaves_i = ['component_id_{}'.format(i) for i in range(1, 9)]
         llave_d = 'component_id'
-        v_connect = multipleUnionVectorizada(df_i= df, df_d= sets_df['specs'], lista_conexion= lista_conexion,
-                                             l_col_llaves_i= l_col_llaves_i, llave_d = llave_d,
-                                             prefijo_vectorizacion= prefijo_vectorizacion)
+        v_connect = self.multipleUnionVectorizada(df_i= df, df_d= sets_df['specs'], lista_conexion= lista_conexion,
+                                                  l_col_llaves_i= l_col_llaves_i, llave_d = llave_d,
+                                                  prefijo_vectorizacion= prefijo_vectorizacion)
         df = merge(left= df, right= v_connect, how= 'left', left_index= True,
                    right_index= True, copy= False)
         ## fin experimentacion
