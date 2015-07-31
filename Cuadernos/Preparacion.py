@@ -143,7 +143,7 @@ class preparaDf:
             df_conn.index = df_i.index
             # A partir de las 'connection_type_id_#' obtenidas de tal union, obtener la matriz vectorizacion de la variable
             # connection.
-            m_vect = vectSumaMultCol(df_conn, lista_conexion, prefijo_vectorizacion, clases= clases)
+            m_vect = self.vectSumaMultCol(df_conn, lista_conexion, prefijo_vectorizacion, clases= clases)
             # Almacenar la matriz vectorizacion tras agregarla a la matriz anterior
             if resultado is not None:
                 if m_vect is not None:
