@@ -68,12 +68,12 @@ modelo.fit(X = X_train.values, y = logTransf(y_train).values.reshape(y_train.sha
 
 # ### Presentacion de resultados
 
-# In[9]:
+# In[11]:
 
 modelo.best_params_
 
 
-# In[10]:
+# In[12]:
 
 validarModelo()
 
@@ -82,7 +82,7 @@ validarModelo()
 
 # ### Envio
 
-# In[24]:
+# In[13]:
 
 X_envio = prepDf.preparar(sets_df, train_o_envio= 'test')
 generarEnvio(modelo, X_envio)
