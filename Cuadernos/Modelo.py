@@ -50,8 +50,3 @@ def definirModelo(num_procesos = -1):
 
 
 # # Ejecucion de rutina
-
-# In[4]:
-
-get_ipython().magic(u'pinfo GradientBoostingRegressor')
-
