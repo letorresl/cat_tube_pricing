@@ -10,7 +10,7 @@
 from numpy.random import seed
 from sklearn.metrics import make_scorer
 from sklearn.preprocessing import Imputer, StandardScaler
-from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.pipeline import Pipeline
 from sklearn.grid_search import GridSearchCV
 
@@ -22,7 +22,7 @@ from Metadatos import RMSLE
 
 # ## Definicion de funciones
 
-# In[3]:
+# In[4]:
 
 def definirModelo(num_procesos = -1):
     seed(1989)
@@ -31,15 +31,14 @@ def definirModelo(num_procesos = -1):
     imputador = Imputer()
     escalador = StandardScaler()
     #selectorVar = SelectKBest(k = 30)
-    decisor = GradientBoostingRegressor(random_state = 1962, n_estimators= 2000)
+    decisor = RandomForestRegressor(random_state = 1962, n_estimators= 1000, oob_score= True)
     puntuador = RMSLE_score
     tuberia = Pipeline(steps = [('imputador', imputador), ('escalador', escalador),
                                 ('decisor', decisor)])
     # Definicion de parametros a ajustar en gridsearch
-    parametros_tuberia = {'decisor__min_samples_leaf' : [8 , 16],
-                          'decisor__max_depth' : [5, 8, 12],
-                          'decisor__learning_rate' : [0.1, 0.02, 0.01],
-                          'decisor__max_features' : [1.0, 0.3, 0.1]}
+    parametros_tuberia = {'decisor__max_features' : [1.0, 0.9, 0.8],
+                          'decisor__max_depth' : [3, 5, 8],
+                          'decisor__min_samples_leaf' : [8, 16, 50]}
     # Instanciacion de rejilla
     modelo = GridSearchCV(estimator = tuberia,
                           param_grid = parametros_tuberia,
