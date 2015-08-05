@@ -40,7 +40,7 @@ def definirModelo(num_procesos = -1):
                           'decisor__max_depth' : [8, 12],
                           'decisor__learning_rate' : [0.005, 0.002],
                           'decisor__max_features' : [0.4, 0.3, 0.2],
-                          'decisor__sample' : [1.0, 0.7, 0.6]}
+                          'decisor__subsample' : [1.0, 0.7, 0.6]}
     # Instanciacion de rejilla
     modelo = GridSearchCV(estimator = tuberia,
                           param_grid = parametros_tuberia,
@@ -51,3 +51,8 @@ def definirModelo(num_procesos = -1):
 
 
 # # Ejecucion de rutina
+
+# In[4]:
+
+get_ipython().magic(u'pinfo GradientBoostingRegressor')
+
