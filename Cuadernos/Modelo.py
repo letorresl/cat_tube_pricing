@@ -31,7 +31,7 @@ def definirModelo(num_procesos = -1):
     imputador = Imputer()
     escalador = StandardScaler()
     #selectorVar = SelectKBest(k = 30)
-    decisor = GradientBoostingRegressor(random_state = 1962, n_estimators= 8000, )
+    decisor = GradientBoostingRegressor(random_state = 1962, n_estimators= 8000)
     puntuador = RMSLE_score
     tuberia = Pipeline(steps = [('imputador', imputador), ('escalador', escalador),
                                 ('decisor', decisor)])
