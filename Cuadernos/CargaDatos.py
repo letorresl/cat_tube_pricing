@@ -5,7 +5,7 @@
 
 # ### Carga de librerias
 
-# In[ ]:
+# In[1]:
 
 import numpy as np
 from pandas import read_excel, read_csv, merge
@@ -45,19 +45,27 @@ def generaPath(path, nombre_archivo):
 def retornaSets(path_proyecto):
     #train = cargadatos(path_proyecto, 'train_set.csv')
     train = read_csv(filepath_or_buffer = generaPath(path_proyecto, 'train_set.csv'), #index_col = 0,
-                     true_values = ['Yes'], false_values = ['No'], parse_dates = ['quote_date'])
+                     true_values = ['Yes'], false_values = ['No'], parse_dates = ['quote_date'],
+                     na_values = [None, ''])
     #test = cargadatos(path_proyecto, 'test_set.csv')
     test = read_csv(filepath_or_buffer = generaPath(path_proyecto, 'test_set.csv'), index_col = 0,
-                     true_values = ['Yes'], false_values = ['No'], parse_dates = ['quote_date'])
+                    true_values = ['Yes'], false_values = ['No'], parse_dates = ['quote_date'],
+                    na_values = [None, ''])
     #tube = cargadatos(path_proyecto, 'tube.csv')
     tube = read_csv(filepath_or_buffer = generaPath(path_proyecto, 'tube.csv'), #index_col = 0,
-                    true_values = ['Y'], false_values = ['N'])
+                    true_values = ['Y'], false_values = ['N'],
+                    na_values = [None, ''])
     #bill = cargadatos(path_proyecto, 'bill_of_materials.csv')
-    bill = read_csv(filepath_or_buffer = generaPath(path_proyecto, 'bill_of_materials.csv'))#, index_col = 0)
+    bill = read_csv(filepath_or_buffer = generaPath(path_proyecto, 'bill_of_materials.csv'),
+                    na_values = [None, ''])#, index_col = 0)
     #specs = cargadatos(path_proyecto, 'comp_threaded.csv')
-    specs = read_csv(filepath_or_buffer = generaPath(path_proyecto, 'comp_threaded.csv'))#, index_col = 0)
+    specs = read_csv(filepath_or_buffer = generaPath(path_proyecto, 'comp_threaded.csv'),
+                     na_values = [None, ''])#, index_col = 0)
 
-    components = cargadatos(path_proyecto, 'components.csv')
+    #components = cargadatos(path_proyecto, 'components.csv')
+    components = read_csv(filepath_or_buffer = generaPath(path_proyecto, 'components.csv'),
+                          na_values = [None, ''])
+    
     comp_adaptor = cargadatos(path_proyecto, 'comp_adaptor.csv')
     comp_boss = cargadatos(path_proyecto, 'comp_boss.csv')
     comp_elbow = cargadatos(path_proyecto, 'comp_elbow.csv')

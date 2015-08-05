@@ -18,6 +18,11 @@ from regex import compile as comp
 from sklearn.metrics import mean_squared_error
 
 
+# In[1]:
+
+from numpy import log, exp
+
+
 # ### Definicion de funciones
 
 # In[ ]:
@@ -54,6 +59,18 @@ def buscarMasReciente(path_busqueda, nombre):
 def generaPathProyecto():
     path_proyecto = join(realpath(curdir), '..')
     return path_proyecto.split('Cuadernos')[0]
+
+
+# In[ ]:
+
+def logTransf(df):
+    return log(df + 1)
+
+
+# In[ ]:
+
+def antilogTransf(df):
+    return exp(df) - 1
 
 
 # # Ejecucion de rutina

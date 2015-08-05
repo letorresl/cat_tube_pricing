@@ -5,68 +5,85 @@
 
 # ### Carga de librerias
 
-# In[ ]:
+# In[1]:
 
-from Metadatos import generaPathProyecto
-
-
-# In[ ]:
-
-from CargaDatos import cargaSets
-
-
-# In[3]:
-
-from Preparacion import preparaDf
+from Metadatos import generaPathProyecto, RMSLE, logTransf, antilogTransf
+from CargaDatos import retornaSets
+from Preparacion import preparaDf, separacionEntrenaObjetivo
+from Modelo import definirModelo
+from CargaDatos import generaPath
+from Salida import generarEnvio
 
 
 # In[2]:
 
-from Modelo import definirModelo
+import ggplot as gg
 
 
-# ### Definicion de Funciones
+# In[3]:
+
+get_ipython().magic(u'matplotlib inline')
+
+
+# In[4]:
+
+import numpy as np
+
+
+# ### Definicion de funciones
+
+# In[5]:
+
+def validarModelo():
+    dScores = {'best' : -modelo.best_score_,
+               'train' : RMSLE(y_train, antilogTransf(modelo.predict(X_train))),
+               'test' : RMSLE(y_test, antilogTransf(modelo.predict(X_test)))}
+    print str('La mejor puntuacion de la crossvalidacion fue: {}\n' +
+              'La puntuacion del entrenamiento fue: {}\n' +
+              'La puntuacion de la prueba fue: {}').format(dScores['best'], dScores['train'], dScores['test'])
+
 
 # # Ejecucion de rutina
 
-# In[ ]:
+# ### Entrenamiento
+
+# In[6]:
 
 path_proyecto = generaPathProyecto()
+sets_df = retornaSets(path_proyecto = path_proyecto)
 
 
-# In[ ]:
+# In[7]:
 
-df = cargaTrain(path_proyecto = path_proyecto)
-
-
-# df = mejorarCalidad(df)
-
-# In[ ]:
-
-X_train, X_test, y_train, y_test = preparacionDf(df, semilla = 1989)
+prepDf = preparaDf()
+df = prepDf.preparar(sets_df)
+X_train, X_test, y_train, y_test = separacionEntrenaObjetivo(df, semilla = 1962, prop_prueba= 0.3)
 
 
-# In[ ]:
+# In[8]:
 
 modelo = definirModelo()
+modelo.fit(X = X_train.values, y = logTransf(y_train).values.reshape(y_train.shape[0],))
 
 
-# In[ ]:
+# ### Presentacion de resultados
 
-modelo.fit(X = X_train.values, y = y_train.values)
+# In[9]:
 
-
-# In[ ]:
-
-resultados = validarModelo(modelo)
+modelo.best_params_
 
 
-# In[ ]:
+# In[10]:
 
-registrarModelo(modelo)
+validarModelo()
 
 
-# In[ ]:
+# ### Experimentacion
 
-generarEnvio(modelo, input)
+# ### Envio
+
+# In[24]:
+
+X_envio = prepDf.preparar(sets_df, train_o_envio= 'test')
+generarEnvio(modelo, X_envio)
 
