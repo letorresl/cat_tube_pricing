@@ -32,12 +32,13 @@ def definirModelo(num_procesos = -1):
     escalador = StandardScaler()
     #selectorVar = SelectKBest(k = 30)
     decisor = RandomForestRegressor(random_state = 1962, oob_score= True,
-                                    n_estimators= 200, min_samples_split= 1, min_samples_leaf= 1)
+                                    min_samples_split= 1, min_samples_leaf= 1,
+                                    max_features= 0.44)
     puntuador = RMSLE_score
     tuberia = Pipeline(steps = [('imputador', imputador), ('escalador', escalador),
                                 ('decisor', decisor)])
     # Definicion de parametros a ajustar en gridsearch
-    parametros_tuberia = {'decisor__max_features' : [0.85, 0.80, 0.75, 0.70]}
+    parametros_tuberia = {'decisor__n_estimators' : [500, 510]}
     # Instanciacion de rejilla
     modelo = GridSearchCV(estimator = tuberia,
                           param_grid = parametros_tuberia,
