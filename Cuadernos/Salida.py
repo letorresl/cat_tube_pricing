@@ -14,6 +14,7 @@ from pandas import DataFrame
 
 from datetime import datetime
 from os.path import join
+from sklearn.externals.joblib import dump
 
 
 # In[2]:
@@ -42,6 +43,18 @@ def guardarDf(dataFrame, nombreArchivo = None, guardarIndice = False):
     pathGuardado = join(generaPathProyecto(), 'Bases',
                         'Locales', str(nombreArchivo + '_' + stringHora + '.txt'))
     dataFrame.to_csv(path_or_buf = pathGuardado, index = guardarIndice)
+
+
+# In[ ]:
+
+# Funcion para almacenar el avance en el dataframe
+def guardarModelo(varModelo, path_proyecto, nombreArchivo = None):
+    stringHora = datetime.today().strftime('%Y%m%d_%H%M%S')
+    if nombreArchivo is None:
+        nombreArchivo = 'modelo_'
+    pathGuardado = join(path_proyecto, 'Bases', 'Locales', 'Modelos', 
+                                str(nombreArchivo + stringHora + '.txt'))
+    dump(value = varModelo, filename = pathGuardado)
 
 
 # # Ejecucion de rutina
