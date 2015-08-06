@@ -5,111 +5,98 @@
 
 # ### Carga de librerias
 
-# In[7]:
+# In[1]:
 
-from Metadatos import generaPathProyecto, RMSLE
+from Metadatos import generaPathProyecto, RMSLE, logTransf, antilogTransf
 from CargaDatos import retornaSets
 from Preparacion import preparaDf, separacionEntrenaObjetivo
 from Modelo import definirModelo
-
-
-# In[8]:
-
 from CargaDatos import generaPath
+from Salida import generarEnvio, guardarModelo, generarY
 
 
-# ### Definicion de Funciones
+# In[ ]:
+
+from Salida import gen
+
+
+# In[2]:
+
+import ggplot as gg
+
+
+# In[3]:
+
+get_ipython().magic(u'matplotlib inline')
+
+
+# In[4]:
+
+import numpy as np
+
+
+# ### Definicion de funciones
+
+# In[5]:
+
+def validarModelo():
+    dScores = {'best' : -modelo.best_score_,
+               'train' : RMSLE(y_train, antilogTransf(modelo.predict(X_train))),
+               'test' : RMSLE(y_test, antilogTransf(modelo.predict(X_test)))}
+    print str('La mejor puntuacion de la crossvalidacion fue: {}\n' +
+              'La puntuacion del entrenamiento fue: {}\n' +
+              'La puntuacion de la prueba fue: {}').format(dScores['best'], dScores['train'], dScores['test'])
+
 
 # # Ejecucion de rutina
 
-# In[9]:
+# ### Entrenamiento
+
+# In[6]:
 
 path_proyecto = generaPathProyecto()
 sets_df = retornaSets(path_proyecto = path_proyecto)
 
 
-# In[10]:
+# In[7]:
 
 prepDf = preparaDf()
-
-
-# In[11]:
-
 df = prepDf.preparar(sets_df)
-
-
-# In[12]:
-
 X_train, X_test, y_train, y_test = separacionEntrenaObjetivo(df, semilla = 1962, prop_prueba= 0.3)
 
 
-# In[13]:
+# In[8]:
 
 modelo = definirModelo()
+modelo.fit(X = X_train.values, y = logTransf(y_train).values.reshape(y_train.shape[0],))
 
 
-# In[14]:
+# ### Presentacion de resultados
 
-modelo.fit(X = X_train.values, y = y_train.values)
-
-
-# In[24]:
+# In[11]:
 
 modelo.best_params_
 
 
-# In[15]:
+# In[12]:
 
-modelo.best_score_
-
-
-# In[16]:
-
-RMSLE(y_train, modelo.predict(X_train))
+validarModelo()
 
 
-# In[17]:
+# ### Almacenamiento modelo y y_estimadas
 
-RMSLE(y_test, modelo.predict(X_test))
+# In[2]:
+
+guardarModelo(modelo, path_proyecto)
+generarY(modelo, X_train, X_test)
 
 
-# In[18]:
+# ### Experimentacion
+
+# ### Envio
+
+# In[13]:
 
 X_envio = prepDf.preparar(sets_df, train_o_envio= 'test')
-
-
-# In[19]:
-
-y_envio = modelo.predict(X_envio.values)
-
-
-# In[20]:
-
-import pandas as pd
-
-
-# In[21]:
-
-y_envio = pd.DataFrame(data= y_envio, index= range(1,y_envio.shape[0] + 1), columns= ['cost'])
-y_envio.index.name = 'id'
-
-
-# In[23]:
-
-y_envio.to_csv(path_or_buf= generaPath(path_proyecto, 'y_envio2.csv'))
-
-
-# In[ ]:
-
-resultados = validarModelo(modelo)
-
-
-# In[ ]:
-
-registrarModelo(modelo)
-
-
-# In[ ]:
-
-generarEnvio(modelo, input)
+generarEnvio(modelo, X_envio)
 

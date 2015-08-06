@@ -26,6 +26,31 @@ from Metadatos import generaPathProyecto, antilogTransf
 
 # In[ ]:
 
+def guardarDf(dataFrame, nombreArchivo = None, guardarIndice = False):
+    stringHora = datetime.today().strftime('%Y%m%d_%H%M%S')
+    if nombreArchivo is None:
+        nombreArchivo = 'df_'
+    pathGuardado = join(generaPathProyecto(), 'Bases',
+                        'Locales', str(nombreArchivo + '_' + stringHora + '.txt'))
+    dataFrame.to_csv(path_or_buf = pathGuardado, index = guardarIndice)
+
+
+# In[ ]:
+
+def generarY(modelo, X_train, X_test):
+    conteo = 0
+    datos = ['train', 'test']
+    for X in [X_train, X_test]:
+        y_estimado = modelo.predict(X.values)
+        y_estimado = antilogTransf(y_estimado)
+        y_estimado = DataFrame(data= y_estimado, index= X.index, columns= ['cost'])
+        y_estimado.index.name = 'id'
+        guardarDf(y_envio, 'y_' + datos[conteo], True)
+        conteo += 1
+
+
+# In[ ]:
+
 def generarEnvio(modelo, X_envio):
     y_envio = modelo.predict(X_envio.values)
     y_envio = antilogTransf(y_envio)
@@ -36,13 +61,14 @@ def generarEnvio(modelo, X_envio):
 
 # In[ ]:
 
-def guardarDf(dataFrame, nombreArchivo = None, guardarIndice = False):
+# Funcion para almacenar el avance en el dataframe
+def guardarModelo(varModelo, path_proyecto, nombreArchivo = None):
     stringHora = datetime.today().strftime('%Y%m%d_%H%M%S')
     if nombreArchivo is None:
-        nombreArchivo = 'df_'
-    pathGuardado = join(generaPathProyecto(), 'Bases',
-                        'Locales', str(nombreArchivo + '_' + stringHora + '.txt'))
-    dataFrame.to_csv(path_or_buf = pathGuardado, index = guardarIndice)
+        nombreArchivo = 'modelo_'
+    pathGuardado = join(path_proyecto, 'Bases', 'Locales', 'Modelos', 
+                                str(nombreArchivo + stringHora + '.txt'))
+    dump(value = varModelo, filename = pathGuardado)
 
 
 # In[ ]:

@@ -7,21 +7,21 @@
 
 # In[1]:
 
-from pandas import merge, DataFrame
+from pandas import merge, DataFrame, DatetimeIndex
 from numpy import floor
 from numpy.random import choice, seed
 from sklearn.preprocessing import label_binarize
 
 
-# In[19]:
+# In[2]:
 
-#from IPython.core.debugger import Tracer
-#tracer = Tracer()
+from IPython.core.debugger import Tracer
+tracer = Tracer()
 
 
 # ### Definicion de funciones
 
-# In[ ]:
+# In[3]:
 
 def limpieza2(df):
     # limpieza de NaN's en las columnas de component_id_n
@@ -31,7 +31,7 @@ def limpieza2(df):
     return df
 
 
-# In[ ]:
+# In[59]:
 
 class preparaDf:
     def __init__(self):
@@ -101,11 +101,76 @@ class preparaDf:
     def reordenaCols(self, df):
         columnas = df.columns
         return df[sorted(columnas)]
+    
+    def vectSumaMultCol(self, df, lista_cols, nombre_base, eliminarColOriginal = True, clases= None):
+        # Definir un df vacio para albergar el resultado de la vectorizacion
+        resultado = None
+        # Establecer las clases que tendra la vectorizacion
+        if clases is None:
+            clases = set()
+            for columna in lista_cols:
+                clases = clases.union(set(df[columna].dropna(axis= 0)))
+        # Iterar para cada columna del conjunto que integran la vectorizacion suma
+        for columna in lista_cols:
+            # Seleccionar los datos con los cuales se conformara la vectorizacion
+            col_a_vectorizar = df[columna].dropna(axis= 0)
+            # Vectorizar la columna y agregarlo a la matriz de resultados
+            if col_a_vectorizar.shape[0] != 0:
+                vectorizacion = DataFrame(data= label_binarize(col_a_vectorizar, classes= list(clases)),
+                                          index= col_a_vectorizar.index,
+                                          columns= ['{}__{}'.format(nombre_base, clase) for clase in clases])      
+                if resultado is not None:
+                    resultado = resultado.add(vectorizacion, axis= 0, fill_value= 0)
+                else:
+                    resultado = vectorizacion
+        if eliminarColOriginal:
+                df = df.drop(labels= lista_cols, axis= 1)
+        #return merge(left= df, right= resultado, how= 'left', left_index= True,
+        #             right_index= True, copy= False)
+        return resultado
+    
+    def multipleUnionVectorizada(self, df_i, df_d, lista_conexion, l_col_llaves_i, llave_d,
+                                 prefijo_vectorizacion):
+        # Obtener las distintas clases en que se separara la matriz
+        clases = set()
+        for columna in lista_conexion:
+            clases = clases.union(set(df_d[columna].dropna(axis= 0)))
+        resultado = None
+        # Unir el dataframe df con 'specs' con la columna 'component_id' para 
+        # cada col de 'df' 'component_id_#'
+        for col in l_col_llaves_i:
+            df_conn = merge(left= df_i, right= df_d[[llave_d] + lista_conexion], how= 'left',
+                            left_on= col, right_on= llave_d)
+            df_conn.index = df_i.index
+            # A partir de las 'connection_type_id_#' obtenidas de tal union, obtener la matriz vectorizacion de la variable
+            # connection.
+            m_vect = self.vectSumaMultCol(df_conn, lista_conexion, prefijo_vectorizacion, clases= clases)
+            # Almacenar la matriz vectorizacion tras agregarla a la matriz anterior
+            if resultado is not None:
+                if m_vect is not None:
+                    resultado = resultado.add(m_vect, axis= 0, fill_value= 0)
+            else:
+                resultado = m_vect
+        return resultado
 
     def preparar(self, sets_df,  train_o_envio = 'train'):
         df = self.integracion1(sets_df = sets_df,  train_o_envio =  train_o_envio)
         df = merge(left= df, right= self.integracion3(sets_df= sets_df, df= df), how= 'left', left_index= True,
                    right_index= True, copy= False)
+        df['year'] = DatetimeIndex(df.quote_date).year
+        df['month'] = DatetimeIndex(df.quote_date).month
+        df['day'] = DatetimeIndex(df.quote_date).day
+        ### experimentacion
+        prefijo_vectorizacion = 'connection_type_id'
+        lista_conexion = ['connection_type_id_{}'.format(i) for i in range(1, 5)]
+        l_col_llaves_i = ['component_id_{}'.format(i) for i in range(1, 9)]
+        llave_d = 'component_id'
+        v_connect = self.multipleUnionVectorizada(df_i= df, df_d= sets_df['specs'], lista_conexion= lista_conexion,
+                                                  l_col_llaves_i= l_col_llaves_i, llave_d = llave_d,
+                                                  prefijo_vectorizacion= prefijo_vectorizacion)
+        df = merge(left= df, right= v_connect, how= 'left', left_index= True,
+                   right_index= True, copy= False)
+        ## fin experimentacion
         df = df.drop(labels= [u'component_id_1', u'quantity_1', u'component_id_2', u'quantity_2', 
                               u'component_id_3', u'quantity_3', u'component_id_4', u'quantity_4',
                               u'component_id_5', u'quantity_5', u'component_id_6', u'quantity_6',
@@ -123,7 +188,7 @@ class preparaDf:
         return df
 
 
-# In[9]:
+# In[5]:
 
 def separacionEntrenaObjetivo(df, semilla, prop_prueba = 0.30):
     seed(semilla)
@@ -157,18 +222,5 @@ def separacionEntrenaObjetivo(df, semilla, prop_prueba = 0.30):
 # path_proyecto = generaPathProyecto()
 # sets_df = retornaSets(path_proyecto)
 
-# df = integracion1(sets_df = sets_df)
-# df = limpieza2(df)
-# df = merge(left= df, right= integracion3(sets_df= sets_df, df= df), how= 'left', left_index= True,
-#            right_index= True, copy= False)
-# df.drop(labels= [u'component_id_1', u'quantity_1', u'component_id_2', u'quantity_2', 
-#                  u'component_id_3', u'quantity_3', u'component_id_4', u'quantity_4',
-#                  u'component_id_5', u'quantity_5', u'component_id_6', u'quantity_6',
-#                  u'component_id_7', u'quantity_7', u'component_id_8', u'quantity_8',
-#                  u'tube_assembly_id'],
-#         axis= 1, inplace= True)
-# df = vectorizacion(df, 'supplier')
-# df = vectorizacion(df, 'material_id')
-# df = vectorizacion(df, 'end_a')
-# df = vectorizacion(df, 'end_x')
-# df = vectorizacion(df, 'other')
+# prepDf = preparaDf()
+# df = prepDf.preparar(sets_df)
