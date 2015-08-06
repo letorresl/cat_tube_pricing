@@ -40,7 +40,7 @@ def guardarDf(dataFrame, nombreArchivo = None, guardarIndice = False):
 def generarY(modelo, X_train, X_test):
     conteo = 0
     datos = ['train', 'test']
-    for X in [X_train, X_test]
+    for X in [X_train, X_test]:
         y_estimado = modelo.predict(X.values)
         y_estimado = antilogTransf(y_estimado)
         y_estimado = DataFrame(data= y_estimado, index= X.index, columns= ['cost'])
