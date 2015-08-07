@@ -71,16 +71,4 @@ def guardarModelo(varModelo, path_proyecto, nombreArchivo = None):
     dump(value = varModelo, filename = pathGuardado)
 
 
-# In[ ]:
-
-# Funcion para almacenar el avance en el dataframe
-def guardarModelo(varModelo, path_proyecto, nombreArchivo = None):
-    stringHora = datetime.today().strftime('%Y%m%d_%H%M%S')
-    if nombreArchivo is None:
-        nombreArchivo = 'modelo_'
-    pathGuardado = join(path_proyecto, 'Bases', 'Locales', 'Modelos', 
-                                str(nombreArchivo + stringHora + '.txt'))
-    dump(value = varModelo, filename = pathGuardado)
-
-
 # # Ejecucion de rutina
