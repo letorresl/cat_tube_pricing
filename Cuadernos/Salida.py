@@ -45,7 +45,7 @@ def generarY(modelo, X_train, X_test):
         y_estimado = antilogTransf(y_estimado)
         y_estimado = DataFrame(data= y_estimado, index= X.index, columns= ['cost'])
         y_estimado.index.name = 'id'
-        guardarDf(y_envio, 'y_' + datos[conteo], True)
+        guardarDf(y_estimado, 'y_' + datos[conteo], True)
         conteo += 1
 
 
