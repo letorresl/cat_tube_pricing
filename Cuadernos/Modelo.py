@@ -10,7 +10,7 @@
 from numpy.random import seed
 from sklearn.metrics import make_scorer
 from sklearn.preprocessing import Imputer, StandardScaler
-from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.pipeline import Pipeline
 from sklearn.grid_search import GridSearchCV
 
@@ -31,28 +31,14 @@ def definirModelo(num_procesos = -1):
     imputador = Imputer()
     escalador = StandardScaler()
     #selectorVar = SelectKBest(k = 30)
-    decisor = GradientBoostingRegressor(random_state = 1962, n_estimators= 8000)
+    decisor = RandomForestRegressor(random_state = 1962, n_estimators= 500, min_samples_leaf= 1,
+                                    min_samples_split= 1, max_features= 0.44,
+                                    n_jobs= -1)
     puntuador = RMSLE_score
-    tuberia = Pipeline(steps = [('imputador', imputador), ('escalador', escalador),
+    modelo = Pipeline(steps = [('imputador', imputador), ('escalador', escalador),
                                 ('decisor', decisor)])
-    # Definicion de parametros a ajustar en gridsearch
-    parametros_tuberia = {'decisor__min_samples_leaf' : [8 , 16],
-                          'decisor__max_depth' : [8, 12],
-                          'decisor__learning_rate' : [0.005, 0.002],
-                          'decisor__max_features' : [0.4, 0.3, 0.2],
-                          'decisor__subsample' : [1.0, 0.7, 0.6]}
-    # Instanciacion de rejilla
-    modelo = GridSearchCV(estimator = tuberia,
-                          param_grid = parametros_tuberia,
-                          scoring = puntuador,
-                          n_jobs = num_procesos)
-    # Ajuste de rejilla
+
     return modelo
 
 
 # # Ejecucion de rutina
-
-# In[4]:
-
-get_ipython().magic(u'pinfo GradientBoostingRegressor')
-
