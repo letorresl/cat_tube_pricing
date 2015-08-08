@@ -15,11 +15,6 @@ from CargaDatos import generaPath
 from Salida import generarEnvio, guardarModelo, generarY
 
 
-# In[ ]:
-
-from Salida import gen
-
-
 # In[2]:
 
 import ggplot as gg
