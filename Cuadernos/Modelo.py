@@ -36,10 +36,10 @@ def definirModelo(num_procesos = -1):
     tuberia = Pipeline(steps = [('imputador', imputador), ('escalador', escalador),
                                 ('decisor', decisor)])
     # Definicion de parametros a ajustar en gridsearch
-    parametros_tuberia = {'decisor__min_samples_leaf' : [8 , 16],
-                          'decisor__max_depth' : [5, 8, 12],
-                          'decisor__learning_rate' : [0.02, 0.01, 0.05],
-                          'decisor__max_features' : [1.0, 0.3, 0.1]}
+    parametros_tuberia = {'decisor__min_samples_leaf' : [7, 8 , 9],
+                          'decisor__max_depth' : [5, 8],
+                          'decisor__learning_rate' : [0.02, 0.05, 0.005],
+                          'decisor__max_features' : [0.2, 0.1]}
     # Instanciacion de rejilla
     modelo = GridSearchCV(estimator = tuberia,
                           param_grid = parametros_tuberia,

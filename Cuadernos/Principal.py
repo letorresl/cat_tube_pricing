@@ -53,14 +53,14 @@ path_proyecto = generaPathProyecto()
 sets_df = retornaSets(path_proyecto = path_proyecto)
 
 
-# In[7]:
+# In[ ]:
 
 prepDf = preparaDf()
 df = prepDf.preparar(sets_df)
 X_train, X_test, y_train, y_test = separacionEntrenaObjetivo(df, semilla = 1962, prop_prueba= 0.3)
 
 
-# In[8]:
+# In[ ]:
 
 modelo = definirModelo()
 modelo.fit(X = X_train.values, y = logTransf(y_train).values.reshape(y_train.shape[0],))
@@ -68,9 +68,14 @@ modelo.fit(X = X_train.values, y = logTransf(y_train).values.reshape(y_train.sha
 
 # ### Presentacion de resultados
 
-# In[11]:
+# In[13]:
 
 modelo.best_params_
+
+
+# In[ ]:
+
+modelo.best_score
 
 
 # In[12]:
@@ -82,7 +87,7 @@ validarModelo()
 
 # ### Envio
 
-# In[13]:
+# In[14]:
 
 X_envio = prepDf.preparar(sets_df, train_o_envio= 'test')
 generarEnvio(modelo, X_envio)
