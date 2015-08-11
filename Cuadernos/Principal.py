@@ -12,7 +12,7 @@ from CargaDatos import retornaSets
 from Preparacion import preparaDf, separacionEntrenaObjetivo
 from Modelo import definirModelo
 from CargaDatos import generaPath
-from Salida import generarEnvio
+from Salida import generarEnvio, guardarModelo, generarY
 
 
 # In[2]:
@@ -81,6 +81,14 @@ modelo.best_score
 # In[12]:
 
 validarModelo()
+
+
+# ### Almacenamiento modelo y y_estimadas
+
+# In[2]:
+
+guardarModelo(modelo, path_proyecto)
+generarY(modelo, X_train, X_test)
 
 
 # ### Experimentacion
